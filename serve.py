@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Initialize the FirecrawlApp with your API key
-API_KEY = os.getenv('FIRECRAWL_API_KEY')
+API_KEY = os.getenv('API_KEY')
 if not API_KEY:
     raise RuntimeError("FIRECRAWL_API_KEY environment variable is not set.")
 
