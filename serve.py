@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Initialize the FirecrawlApp with your API key
-API_KEY = os.getenv('API_KEY')
+API_KEY = os.getenv('FIRECRAWL_API_KEY', 'fc-c10b9709abf543ec86cf26efcd71b204')
 if not API_KEY:
     raise RuntimeError("FIRECRAWL_API_KEY environment variable is not set.")
 
@@ -21,13 +21,26 @@ class ExtractSchema(BaseModel):
     first_transaction_sent:str
     multichain_portfolio_balance: str
     public_name_tag:str
-    
+class ExtractSchematx(BaseModel):
+    transaction_hash:str
+    transaction_from:str
+    transaction_from_platform_app:str
+    transaction_to:str
+    transaction_to_platform_app:str
+    amount_in_usd:str
+    transaction_block_number:str
+    transaction_timestamp:str
+    transaction_gas_used:str
+    transaction_gas_limit:str
+    transaction_input:str
+    transaction_output:str
+    transaction_contract_address:str  
 
 
 
   
 
-def scrape(bc, tx_hash,q):
+def scrape(bc, tx_hash,q,schem):
     if bc == "eth":
         bc_url = 'https://etherscan.io'
     elif bc == "bnb":
@@ -40,7 +53,7 @@ def scrape(bc, tx_hash,q):
     data = app_instance.scrape_url(etherscan_link, {
         'formats': ['extract'],
         'extract': {
-            'schema': ExtractSchema.model_json_schema(),
+            'schema': schem.model_json_schema(),
         }
     })
     return data
@@ -49,6 +62,7 @@ def scrape(bc, tx_hash,q):
 def get_details_query():
     try:
         # Extract query parameters
+        schem=ExtractSchema
         addx = request.args.get("addx")  # Correct parameter name
         bc = request.args.get("bc")  # Correct parameter name
 
@@ -58,7 +72,7 @@ def get_details_query():
 
         # Call the scrape function
         q="address"
-        result = scrape(bc,addx,q)
+        result = scrape(bc,addx,q,schem)
 
         return jsonify({"result": result['extract']}), 200
 
@@ -71,6 +85,7 @@ def get_details_query():
 def get_details():
     try:
         # Extract query parameters
+        schem=ExtractSchematx
         addx = request.args.get("txn")  # Correct parameter name
         bc = request.args.get("bc")  # Correct parameter name
 
@@ -80,7 +95,7 @@ def get_details():
 
         # Call the scrape function
         q="tx"
-        result = scrape(bc, addx,q)
+        result = scrape(bc, addx,q,schem)
 
         return jsonify({"result": result['extract']}), 200
 
