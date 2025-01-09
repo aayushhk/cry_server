@@ -107,6 +107,6 @@ def get_details():
 
 if __name__ == "__main__":
     try:
-        app.run(debug=False, host="0.0.0.0", port=5001)
+        app.run(debug=False, host="0.0.0.0", port=5002)
     except Exception as e:
         print(f"Failed to start the server: {e}")
