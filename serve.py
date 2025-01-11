@@ -23,9 +23,9 @@ class ExtractSchema(BaseModel):
     public_name_tag:str
 class ExtractSchematx(BaseModel):
     transaction_hash:str
-    transaction_from:str
+    transaction_from_address:str
     transaction_from_platform_app:str
-    transaction_to:str
+    transaction_to_address:str
     transaction_to_platform_app:str
     amount_in_usd:str
     transaction_block_number:str
